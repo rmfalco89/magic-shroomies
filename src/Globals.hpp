@@ -39,6 +39,7 @@ extern byte fcFAEDirection2Pin;
 extern byte fcBuzzerPin;
 
 /**** Others ****/
+extern byte iceButtonPin;
 extern byte button1Pin;
 extern byte button2Pin;
 extern byte button3Pin;

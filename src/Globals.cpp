@@ -19,6 +19,7 @@ const byte criticalHighTemp = 90;
 
 byte ledPin = 13;
 
+byte iceButtonPin = A2;
 byte button1Pin = 50;
 byte button2Pin = 51;
 byte button3Pin = 52;

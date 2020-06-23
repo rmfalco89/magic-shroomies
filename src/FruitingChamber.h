@@ -27,6 +27,8 @@ void setFCHeatFanToSpeed(int speed);
 
 void getFCSummary(char * s);
 
+void fcSwitchIce();
+
 // for debugging purpose only
 extern HeatBlock *fcHeatBlock;
 extern DHTSensor *fcTempSensor;

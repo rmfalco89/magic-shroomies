@@ -46,6 +46,8 @@ const byte fcCoolingDownFanSpeed = 80;
 static const uint8_t FAEFanSpeed = 255;
 bool humidifierOn = true;
 
+bool ice = false;
+
 HeatBlock *fcHeatBlock;
 DHTSensor *fcTempSensor;
 
@@ -213,19 +215,62 @@ void setFcTargetHumidity(float humidity) {
     fcTargetHumidity = humidity;
 }
 
+void fcSwitchIce() {
+    ice = !ice;
+}
+
 void getFCSummary(char *s) {
+    bool showHumidifierAndFAE = false;
+    bool showIce = true;
+    bool showTime = true;
     char convStr[10];
 
     strcpy(s, "");
+    // temp
     dtostrf(fcTempSensor->temperature, 2, 1, convStr);
     strcat(s, convStr);
     strcat(s, fcTempSensor->celsius ? "C" : "F");
     strcat(s, " ");
 
+    // humidity
     snprintf(convStr, 3, "%d", fcTempSensor->humidity);
     strcat(s, convStr);
-    strcat(s, "%> >H. ");
-    strcat(s, humidifierOn ? "1" : "0");
-    strcat(s, " F. ");
-    strcat(s, FAEFanOn ? "1" : "0");
+    strcat(s, "%");
+
+    // empty line
+    strcat(s, "> ");
+
+    // humidifier and FAE fan
+    if (showHumidifierAndFAE) {
+        strcat(s, ">H. ");
+        strcat(s, humidifierOn ? "1" : "0");
+        strcat(s, " F. ");
+        strcat(s, FAEFanOn ? "1" : "0");
+    }
+
+    if (showIce) {
+        strcat(s, ">");
+        strcat(s, ice ? "Ice" : "No ice");
+    }
+
+    if (showTime) {
+        uint32_t timeInSeconds = millis() / 1000;
+        if (elapsedDays(timeInSeconds)) {
+            snprintf(convStr, 3, "%d", elapsedDays(timeInSeconds));
+            strcat(s, convStr);
+            strcat(s, "d ");
+        }
+        if (numberOfHours(timeInSeconds)) {
+            snprintf(convStr, 3, "%02dh", numberOfHours(timeInSeconds));
+            strcat(s, convStr);
+        }
+        if (numberOfMinutes(timeInSeconds)) {
+            snprintf(convStr, 3, "%02dm", numberOfMinutes(timeInSeconds));
+            strcat(s, convStr);
+        }
+        if (numberOfSeconds(timeInSeconds)) {
+            snprintf(convStr, 3, "%02ds", numberOfSeconds(timeInSeconds));
+            strcat(s, convStr);
+        }
+    }
 }

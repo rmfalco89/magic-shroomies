@@ -10,6 +10,7 @@
 #include "FruitingChamber.h"
 
 GUI *myGui = nullptr;
+ezButton buttonIce(iceButtonPin);
 ezButton buttonPlus(button1Pin);
 ezButton buttonMinus(button2Pin);
 ezButton buttonMode(button3Pin);
@@ -27,6 +28,7 @@ static uint32_t prevMillis = 0;
 int minUpdateInterval = 1000;
 
 void setupGUI() {
+    buttonIce.setDebounceTime(50);
     buttonPlus.setDebounceTime(50);
     buttonMinus.setDebounceTime(50);
     buttonMode.setDebounceTime(50);
@@ -37,9 +39,13 @@ void setupGUI() {
 
 void loopGUI() {
     // must call the loop function on the buttons
+    buttonIce.loop();
     buttonPlus.loop();
     buttonMinus.loop();
     buttonMode.loop();
+
+    if (buttonIce.isPressed())
+        fcSwitchIce();
 
     if (buttonMode.isReleased())
         myGui->buttonModeAction();
@@ -73,7 +79,7 @@ void GUI::buttonMinusAction() {
     Serial.println(F("buttonMinusAction"));
 }
 
-void GUI::getLCDContent(char * s) {
+void GUI::getLCDContent(char *s) {
     switch (this->currentMode) {
         case hello:
             strcpy(s, "Shroomies!");
