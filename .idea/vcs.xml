@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nanoatmega328/Adafruit Unified Sensor" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nanoatmega328/DHT sensor library" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nanoatmega328/SSD1306Ascii" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nanoatmega328/ezButton" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nucleo_f411re/Adafruit Unified Sensor" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nucleo_f411re/DHT sensor library" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nucleo_f411re/SSD1306Ascii" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.pio/libdeps/nucleo_f411re/ezButton" vcs="Git" />
+  </component>
+</project>
