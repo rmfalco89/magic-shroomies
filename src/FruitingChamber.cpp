@@ -107,24 +107,18 @@ void loopFC() {
     if (SHROOMIES_DEBUG)
         Serial.println(F("FC - handle temperature"));
 
-    if (!fcHeatBlock->isActive()) {
-        if (fcTempSensor->temperature < fcTargetTemp - tempGap)
-            fcHeatBlock->heatUp();
-        if (fcTempSensor->temperature > fcTargetTemp + tempGap && ice)
-            fcHeatBlock->moveAir();
-    } else {
-        if (fcTempSensor->temperature > fcTargetTemp + tempGap && ice)
-            fcHeatBlock->moveAir();
-        else if (fcTempSensor->temperature > fcTargetTemp)
-            fcHeatBlock->stopHeatingUp();
-    }
-
+    if (fcTempSensor->temperature < fcTargetTemp - tempGap && !fcHeatBlock->isActive()) // low temp, heat up
+        fcHeatBlock->heatUp();
+    else if (ice && fcTempSensor->temperature > fcTargetTemp + tempGap) // temp too high, but ice in FC -> cool down
+        fcHeatBlock->moveAir();
+    else if (fcHeatBlock->isActive() && fcTempSensor->temperature > fcTargetTemp) // warm enough, cool heat lamp down
+        fcHeatBlock->stopHeatingUp();
 
     /*** handle humidity ***/
     if (SHROOMIES_DEBUG)
         Serial.println(F("FC - handle humidity"));
     if (fcTempSensor->humidity < (fcTargetHumidity - humidityGap)) {// RH less than target - allowed gap
-        if (!humidifierOn && millis() > lastHumidifierSwitchMillis + humidifierMaxActivityMillis/2)
+        if (!humidifierOn && millis() > lastHumidifierSwitchMillis + humidifierMaxActivityMillis / 2)
             fcSwitchHumidifier(true);
         else if (humidifierOn && millis() > lastHumidifierSwitchMillis + humidifierMaxActivityMillis)
             fcSwitchHumidifier(false);
@@ -212,7 +206,7 @@ void setFCHeatFanToSpeed(int speed) {
 
 void fcSwitchHumidifier(bool on) {
     Serial.print(F("Switched humidifier "));
-    Serial.println(on? F("on") : F("off"));
+    Serial.println(on ? F("on") : F("off"));
     lastHumidifierSwitchMillis = millis();
     humidifierOn = on;
     digitalWrite(fcHumidifierPin, on ? HIGH : LOW);
