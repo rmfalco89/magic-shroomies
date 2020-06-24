@@ -25,8 +25,7 @@ static byte tempGap = 1;
 static byte fcTargetHumidity = 95;
 static byte humidityGap = 2;
 static uint32_t lastHumidifierSwitchMillis = 0;
-static byte humidifierMaxSecondsOn = 255;
-static byte humidifierMinSecondsOff = 60;
+static uint16_t humidifierMaxActivityMillis = 60000;
 
 static uint32_t prevMillis = 0;
 uint16_t updateInterval = 5000;
@@ -47,6 +46,9 @@ static const uint8_t FAEFanSpeed = 255;
 bool humidifierOn = true;
 
 bool ice = false;
+
+byte tempReadFrequency = 3;
+byte repetition = 0;
 
 HeatBlock *fcHeatBlock;
 DHTSensor *fcTempSensor;
@@ -82,13 +84,17 @@ void loopFC() {
     // update every updateInterval millis
     if (millis() < prevMillis + updateInterval)
         return;
+
+    ++repetition %= tempReadFrequency;
+
     prevMillis = millis();
 
     if (SHROOMIES_DEBUG)
         Serial.println(F("FC loop"));
 
     // read temp and humidity
-    fcTempSensor->read();
+    if (repetition == 0)
+        fcTempSensor->read();
 
     // if sensor didn't return valid values for various consecutive times, turn off heat block and buzzSOS.
     if (fcTempSensor->temperature == -100. || fcTempSensor->humidity == 0) {
@@ -100,11 +106,14 @@ void loopFC() {
     /*** handle temp ***/
     if (SHROOMIES_DEBUG)
         Serial.println(F("FC - handle temperature"));
+
     if (!fcHeatBlock->isActive()) {
         if (fcTempSensor->temperature < fcTargetTemp - tempGap)
             fcHeatBlock->heatUp();
+        if (fcTempSensor->temperature > fcTargetTemp + tempGap && ice)
+            fcHeatBlock->moveAir();
     } else {
-        if (fcTempSensor->temperature > fcTargetTemp + tempGap)
+        if (fcTempSensor->temperature > fcTargetTemp + tempGap && ice)
             fcHeatBlock->moveAir();
         else if (fcTempSensor->temperature > fcTargetTemp)
             fcHeatBlock->stopHeatingUp();
@@ -115,9 +124,9 @@ void loopFC() {
     if (SHROOMIES_DEBUG)
         Serial.println(F("FC - handle humidity"));
     if (fcTempSensor->humidity < (fcTargetHumidity - humidityGap)) {// RH less than target - allowed gap
-        if (!humidifierOn && millis() > lastHumidifierSwitchMillis + humidifierMinSecondsOff)
+        if (!humidifierOn && millis() > lastHumidifierSwitchMillis + humidifierMaxActivityMillis/2)
             fcSwitchHumidifier(true);
-        else if (humidifierOn && millis() > lastHumidifierSwitchMillis + humidifierMaxSecondsOn)
+        else if (humidifierOn && millis() > lastHumidifierSwitchMillis + humidifierMaxActivityMillis)
             fcSwitchHumidifier(false);
     } else if (fcTempSensor->humidity >= fcTargetHumidity)
         fcSwitchHumidifier(false);
@@ -202,6 +211,8 @@ void setFCHeatFanToSpeed(int speed) {
 }
 
 void fcSwitchHumidifier(bool on) {
+    Serial.print(F("Switched humidifier "));
+    Serial.println(on? F("on") : F("off"));
     lastHumidifierSwitchMillis = millis();
     humidifierOn = on;
     digitalWrite(fcHumidifierPin, on ? HIGH : LOW);
@@ -250,27 +261,36 @@ void getFCSummary(char *s) {
 
     if (showIce) {
         strcat(s, ">");
-        strcat(s, ice ? "Ice" : "No ice");
+        if (!ice)
+            strcat(s, "No ");
+        strcat(s, "Ice");
     }
 
     if (showTime) {
+        int secPerH = 3600;
+        byte sec = 60;
+        byte hrs = 24;
+        // macros from DateTime.h
         uint32_t timeInSeconds = millis() / 1000;
-        if (elapsedDays(timeInSeconds)) {
-            snprintf(convStr, 3, "%d", elapsedDays(timeInSeconds));
+
+        strcat(s, ">");
+
+        if (timeInSeconds > hrs * secPerH) {
+            itoa((int) (timeInSeconds / secPerH / hrs), convStr, 10);
             strcat(s, convStr);
             strcat(s, "d ");
         }
-        if (numberOfHours(timeInSeconds)) {
-            snprintf(convStr, 3, "%02dh", numberOfHours(timeInSeconds));
-            strcat(s, convStr);
-        }
-        if (numberOfMinutes(timeInSeconds)) {
-            snprintf(convStr, 3, "%02dm", numberOfMinutes(timeInSeconds));
-            strcat(s, convStr);
-        }
-        if (numberOfSeconds(timeInSeconds)) {
-            snprintf(convStr, 3, "%02ds", numberOfSeconds(timeInSeconds));
-            strcat(s, convStr);
-        }
+
+        itoa((int) (timeInSeconds % (secPerH * hrs) / secPerH), convStr, 10);
+        strcat(s, convStr);
+        strcat(s, "h");
+
+        itoa((int) ((timeInSeconds / sec) % sec), convStr, 10);
+        strcat(s, convStr);
+        strcat(s, "m");
+
+        itoa((int) (timeInSeconds % sec), convStr, 10);
+        strcat(s, convStr);
+        strcat(s, "s");
     }
 }
