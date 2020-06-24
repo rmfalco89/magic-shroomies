@@ -25,7 +25,7 @@ int buttonModeState = 0;
 int buttonPlusState = 0;
 int buttonMinusState = 0;
 static uint32_t prevMillis = 0;
-int minUpdateInterval = 1000;
+byte minUpdateInterval = 50;
 
 void setupGUI() {
     buttonIce.setDebounceTime(50);
@@ -44,7 +44,7 @@ void loopGUI() {
     buttonMinus.loop();
     buttonMode.loop();
 
-    if (buttonIce.isPressed())
+    if (buttonIce.isReleased())
         fcSwitchIce();
 
     if (buttonMode.isReleased())
