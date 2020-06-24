@@ -93,6 +93,8 @@ void DHTSensor::read() {
         if (!isnan(event.temperature)) {
             total += event.temperature;
             count++;
+            Serial.print(F("Read temp: "));
+            Serial.println(event.temperature);
 
             if (SHROOMIES_DEBUG) {
                 Serial.println(event.temperature);
@@ -131,6 +133,7 @@ void DHTSensor::read() {
             if (!isnan(event.relative_humidity)) {
                 total += event.relative_humidity;
                 count++;
+                Serial.print(F("Read RH: "));
                 Serial.println(event.relative_humidity);
 
                 if (i + 1 < this->numReadings)

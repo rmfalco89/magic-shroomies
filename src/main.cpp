@@ -27,13 +27,11 @@ void setup() {
 
     printNTimes('#', 40);
 
-    Serial.print("freeMemory before logo =");
-    Serial.println(freeMemory());
+//    Serial.print("freeMemory before logo =");
+//    Serial.println(freeMemory());
     showLogo();
-    Serial.print("freeMemory after logo =");
-    Serial.println(freeMemory());
-    delay(1000);
-
+//    Serial.print("freeMemory after logo =");
+//    Serial.println(freeMemory());
 
     setupLcd();
     setupGUI();
@@ -45,7 +43,7 @@ void setup() {
     printNTimes('*', 40);
     Serial.println();
 
-    buzz(1, 300, (uint16_t) 220);
+    buzz(1, 300, 220);
 }
 
 unsigned long prevMillis = 0;
@@ -58,7 +56,6 @@ void loop() {
     loopFC();
     loopGUI();
 
-//    loopLcd();
     if (!SHROOMIES_DEBUG)
         loopLcd();
     else {

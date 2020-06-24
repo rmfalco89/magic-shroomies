@@ -55,6 +55,7 @@ void HeatBlock::moveAir() {
     this->active = true;
 
     if (!this->movingAir) {
+        this->switchHeatLamp(false);
         this->setFanSpeed(normalFanSpeed);
         this->movingAir = true;
     }
