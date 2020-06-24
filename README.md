@@ -1,5 +1,7 @@
 # magic-shroomies
-[WIP]
+##[WIP]
+
+![Intro animation](https://github.com/rmfalco89/magic-shroomies/blob/master/resources/logo_animation.gif)
 
 In mushroom cultivation, a FC (Fruiting Chamber) is a controlled environment in which temperature and relative humidity are kept constant to values specific to the type of mushroom.
 
