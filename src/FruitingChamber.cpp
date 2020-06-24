@@ -261,29 +261,33 @@ void getFCSummary(char *s) {
     }
 
     if (showTime) {
-        unsigned int secPerH = 3600;
-        byte sec = 60;
-        byte hrs = 24;
+        unsigned int secInHour = 3600;
+        byte secInMin = 60;
+        byte hrsInDay = 24;
         // macros from DateTime.h
         uint32_t timeInSeconds = millis() / 1000;
 
         strcat(s, ">");
 
-        if (timeInSeconds > hrs * secPerH) {
-            itoa((int) (timeInSeconds / secPerH / hrs), convStr, 10);
+        // days
+        if (timeInSeconds > secInHour * hrsInDay) {
+            itoa((int) (timeInSeconds / (secInHour * hrsInDay)), convStr, 10);
             strcat(s, convStr);
             strcat(s, "d ");
         }
 
-        itoa((int) (timeInSeconds % (secPerH * hrs) / secPerH), convStr, 10);
+        // hours
+        itoa((int) (timeInSeconds % (secInHour * hrsInDay) / secInHour), convStr, 10);
         strcat(s, convStr);
         strcat(s, "h");
 
-        itoa((int) ((timeInSeconds / sec) % sec), convStr, 10);
+        // minutes
+        itoa((int) ((timeInSeconds / secInMin) % secInMin), convStr, 10);
         strcat(s, convStr);
         strcat(s, "m");
 
-        itoa((int) (timeInSeconds % sec), convStr, 10);
+        // seconds
+        itoa((int) (timeInSeconds % secInMin), convStr, 10);
         strcat(s, convStr);
         strcat(s, "s");
     }
