@@ -8,23 +8,23 @@ uint32_t previousMillis;
 int blinkInterval = 2500, ledState = LOW;
 
 byte short_millis = 30;
-byte repetitions = 10;
+byte blinkLedRepetitions = 10;
 byte count = 0;
 
 void blinkLedNonBlocking() {
-    if (count == repetitions) {
-        if (millis() > previousMillis + blinkInterval + repetitions * short_millis) {
+    if (count == blinkLedRepetitions) {
+        if (millis() > previousMillis + blinkInterval + blinkLedRepetitions * short_millis) {
             previousMillis = millis();
             count = 0;
         }
-    } else if ((millis() > (previousMillis + (count + 1) * short_millis)) && count < repetitions)
+    } else if ((millis() > (previousMillis + (count + 1) * short_millis)) && count < blinkLedRepetitions)
         count++;
 
     ledState = (count % 2 == 0) ? LOW : HIGH;
     digitalWrite(ledPin, ledState);
 }
 
-void buzz(byte repetitions, byte duration, uint16_t toneValue) {
+void buzz(byte repetitions, uint16_t duration, uint16_t toneValue) {
     for (byte i = 0; i < repetitions; i++) {
         tone(fcBuzzerPin, toneValue);
         delay(duration);

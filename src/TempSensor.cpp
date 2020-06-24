@@ -128,7 +128,6 @@ void DHTSensor::read() {
         count = 0;
         for (int i = 0; i < this->numReadings; i++) {
             this->sensor->humidity().getEvent(&event);
-            event.relative_humidity;
 
             if (!isnan(event.relative_humidity)) {
                 total += event.relative_humidity;

@@ -19,7 +19,7 @@ const byte criticalHighTemp = 90;
 
 byte ledPin = 13;
 
-byte iceButtonPin = A2;
+byte iceButtonPin = A6;
 byte button1Pin = 50;
 byte button2Pin = 51;
 byte button3Pin = 52;
@@ -36,6 +36,9 @@ byte fcFAEDirection2Pin = 4;
 byte fcHeatFanSpeedPin = 5;
 byte fcFAEFanPin = 3;
 byte fcBuzzerPin = 9;
+byte fcHeatingUpLedPin = A1;
+byte fcCoolingDownLedPin = A2;
+byte fcMovingAirLedPin = A3;
 
 
 #endif //USING_ATMEGA_ARDUINO_NANO

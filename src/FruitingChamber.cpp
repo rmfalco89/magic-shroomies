@@ -261,7 +261,7 @@ void getFCSummary(char *s) {
     }
 
     if (showTime) {
-        int secPerH = 3600;
+        unsigned int secPerH = 3600;
         byte sec = 60;
         byte hrs = 24;
         // macros from DateTime.h

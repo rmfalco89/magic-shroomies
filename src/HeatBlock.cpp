@@ -13,6 +13,9 @@ HeatBlock::HeatBlock(byte heatLampPin, byte fanSpeedPin, byte normalFanSpeed, by
                      bool heatLampInvertedRelay) {
     pinMode(heatLampPin, OUTPUT);
     pinMode(fanSpeedPin, OUTPUT);
+    pinMode(fcHeatingUpLedPin, OUTPUT);
+    pinMode(fcCoolingDownLedPin, OUTPUT);
+    pinMode(fcMovingAirLedPin, OUTPUT);
 
     this->heatLampPin = heatLampPin;
     this->fanSpeedPin = fanSpeedPin;
@@ -128,4 +131,12 @@ void HeatBlock::loop() {
             this->coolingDown = false;
         }
     }
+
+    this->handleStatusLEDs();
+}
+
+void HeatBlock::handleStatusLEDs() {
+    digitalWrite(fcHeatingUpLedPin, heatLampOn ? HIGH : LOW);
+    digitalWrite(fcCoolingDownLedPin, coolingDown? HIGH : LOW);
+    digitalWrite(fcMovingAirLedPin, movingAir? HIGH : LOW);
 }

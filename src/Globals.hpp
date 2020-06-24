@@ -38,6 +38,10 @@ extern byte fcFAEDirection1Pin;
 extern byte fcFAEDirection2Pin;
 extern byte fcBuzzerPin;
 
+extern byte fcHeatingUpLedPin;
+extern byte fcCoolingDownLedPin;
+extern byte fcMovingAirLedPin;
+
 /**** Others ****/
 extern byte iceButtonPin;
 extern byte button1Pin;

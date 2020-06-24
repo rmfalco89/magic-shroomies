@@ -24,7 +24,7 @@ ezButton buttonMode(button3Pin);
 int buttonModeState = 0;
 int buttonPlusState = 0;
 int buttonMinusState = 0;
-static uint32_t prevMillis = 0;
+//static uint32_t prevMillis = 0;
 byte minUpdateInterval = 50;
 
 void setupGUI() {

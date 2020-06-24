@@ -40,6 +40,8 @@ public:
 
     bool isActive() { return this->active; }
 
+    void handleStatusLEDs();
+
 };
 
 #endif //HEATBLOCK_H

@@ -23,7 +23,7 @@
 
 void buzzSOS();
 
-void buzz(byte repetitions, byte duration, uint16_t toneValue);
+void buzz(byte repetitions, uint16_t duration, uint16_t toneValue);
 
 void blinkLedNonBlocking();
 
