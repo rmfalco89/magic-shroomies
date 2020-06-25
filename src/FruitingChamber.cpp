@@ -41,11 +41,12 @@ static bool FAEFanOn = false;
 static bool FAEFanOnShortPush = false;
 
 const byte fcNormalFanSpeed = 60;
-const byte fcCoolingDownFanSpeed = 80;
+const byte fcCoolingDownFanSpeed = 100;
 static const uint8_t FAEFanSpeed = 255;
 bool humidifierOn = true;
 
 bool ice = false;
+uint32_t iceMeltedTime; // used to consider ice melted after a num of hrs defined statically in fcSwitchIce()
 
 byte tempReadFrequency = 3;
 byte repetition = 0;
@@ -109,8 +110,15 @@ void loopFC() {
 
     if (fcTempSensor->temperature < fcTargetTemp - tempGap && !fcHeatBlock->isActive()) // low temp, heat up
         fcHeatBlock->heatUp();
-    else if (ice && fcTempSensor->temperature > fcTargetTemp + tempGap) // temp too high, but ice in FC -> cool down
+    else if (ice && fcTempSensor->temperature > fcTargetTemp + tempGap) { // temp too high, but ice in FC -> cool down
         fcHeatBlock->moveAir();
+
+        // check if ice is melted
+        if (ice && millis() > iceMeltedTime) {
+            Serial.println("Ice is melted");
+            fcSwitchIce(false);
+        }
+    }
     else if (fcHeatBlock->isActive() && fcTempSensor->temperature > fcTargetTemp) // warm enough, cool heat lamp down
         fcHeatBlock->stopHeatingUp();
 
@@ -205,8 +213,8 @@ void setFCHeatFanToSpeed(int speed) {
 }
 
 void fcSwitchHumidifier(bool on) {
-    Serial.print(F("Switched humidifier "));
-    Serial.println(on ? F("on") : F("off"));
+//    Serial.print(F("Switched humidifier "));
+//    Serial.println(on ? F("on") : F("off"));
     lastHumidifierSwitchMillis = millis();
     humidifierOn = on;
     digitalWrite(fcHumidifierPin, on ? HIGH : LOW);
@@ -221,10 +229,20 @@ void setFcTargetHumidity(float humidity) {
 }
 
 void fcSwitchIce() {
-    ice = !ice;
+    fcSwitchIce(!ice);
+}
+
+void fcSwitchIce(bool on) {
+    ice = on;
+    if (on)
+        iceMeltedTime = millis() + 1000UL * 3600UL * 5 + 10000UL; // consider ice melted after 5 hours
 }
 
 void getFCSummary(char *s) {
+    unsigned int secInHour = 3600;
+    byte secInMin = 60;
+    byte hrsInDay = 24;
+
     bool showHumidifierAndFAE = false;
     bool showIce = true;
     bool showTime = true;
@@ -257,14 +275,21 @@ void getFCSummary(char *s) {
         strcat(s, ">");
         if (!ice)
             strcat(s, "No ");
-        strcat(s, "Ice");
+        strcat(s, "Ice  ");
+        if (ice) {
+            // hours
+            itoa((int) ((iceMeltedTime - millis()) / 1000 % (secInHour * hrsInDay) / secInHour), convStr, 10);
+            strcat(s, convStr);
+            strcat(s, "h");
+
+            // minutes
+            itoa((int) (((iceMeltedTime - millis()) / 1000 / secInMin) % secInMin), convStr, 10);
+            strcat(s, convStr);
+            strcat(s, "m");
+        }
     }
 
     if (showTime) {
-        unsigned int secInHour = 3600;
-        byte secInMin = 60;
-        byte hrsInDay = 24;
-        // macros from DateTime.h
         uint32_t timeInSeconds = millis() / 1000;
 
         strcat(s, ">");
