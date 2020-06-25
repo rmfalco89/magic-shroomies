@@ -7,9 +7,9 @@
 uint32_t previousMillis;
 int blinkInterval = 2500, ledState = LOW;
 
-byte short_millis = 30;
-byte blinkLedRepetitions = 10;
-byte count = 0;
+static byte short_millis = 30;
+static byte blinkLedRepetitions = 10;
+static byte count = 0;
 
 void blinkLedNonBlocking() {
     if (count == blinkLedRepetitions) {

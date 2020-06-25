@@ -29,6 +29,7 @@
 
 static uint32_t previousMillis;
 int lcdUpdateFreq = 1000;
+static byte count = 0;
 
 //SSD1306AsciiAvrI2c oled;
 SSD1306AsciiWire oled;
@@ -54,6 +55,10 @@ void loopLcd() {
         return; // do nothing if the minimum update interval hasn't passed
 
     previousMillis = currentMillis;
+    if (++count == 5) {
+        count = 0;
+        oled.clear();
+    }
 
     char buf[50];
     myGui->getLCDContent(buf);

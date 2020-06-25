@@ -43,7 +43,7 @@ void setup() {
     printNTimes('*', 40);
     Serial.println();
 
-    buzz(1, 300, 220U);
+    buzz(1, 300, 220);
 }
 
 unsigned long prevMillis = 0;
