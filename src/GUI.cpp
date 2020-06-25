@@ -11,9 +11,9 @@
 
 GUI *myGui = nullptr;
 ezButton buttonIce(iceButtonPin);
-ezButton buttonPlus(button1Pin);
-ezButton buttonMinus(button2Pin);
-ezButton buttonMode(button3Pin);
+//ezButton buttonPlus(button1Pin);
+//ezButton buttonMinus(button2Pin);
+//ezButton buttonMode(button3Pin);
 
 /**
  * Button States:
@@ -29,9 +29,9 @@ byte minUpdateInterval = 50;
 
 void setupGUI() {
     buttonIce.setDebounceTime(50);
-    buttonPlus.setDebounceTime(50);
-    buttonMinus.setDebounceTime(50);
-    buttonMode.setDebounceTime(50);
+//    buttonPlus.setDebounceTime(50);
+//    buttonMinus.setDebounceTime(50);
+//    buttonMode.setDebounceTime(50);
 
     myGui = new GUI();
     Serial.println(F("setupGUI completed"));
@@ -40,20 +40,21 @@ void setupGUI() {
 void loopGUI() {
     // must call the loop function on the buttons
     buttonIce.loop();
-    buttonPlus.loop();
-    buttonMinus.loop();
-    buttonMode.loop();
+//    buttonPlus.loop();
+//    buttonMinus.loop();
+//    buttonMode.loop();
 
-    if (buttonIce.isReleased())
+    if (buttonIce.isReleased()) {
         fcSwitchIce();
+    }
 
-    if (buttonMode.isReleased())
-        myGui->buttonModeAction();
-
-    if (buttonPlus.isPressed())
-        myGui->buttonPlusAction();
-    else if (buttonMinus.isPressed())
-        myGui->buttonMinusAction();
+//    if (buttonMode.isReleased())
+//        myGui->buttonModeAction();
+//
+//    if (buttonPlus.isPressed())
+//        myGui->buttonPlusAction();
+//    else if (buttonMinus.isPressed())
+//        myGui->buttonMinusAction();
 
 }
 
