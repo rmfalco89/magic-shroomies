@@ -16,6 +16,9 @@ HeatBlock::HeatBlock(byte heatLampPin, byte fanSpeedPin, byte normalFanSpeed, by
     pinMode(fcHeatingUpLedPin, OUTPUT);
     pinMode(fcCoolingDownLedPin, OUTPUT);
     pinMode(fcMovingAirLedPin, OUTPUT);
+    digitalWrite(fcHeatingUpLedPin, HIGH);
+    digitalWrite(fcCoolingDownLedPin, HIGH);
+    digitalWrite(fcMovingAirLedPin, HIGH);
 
     this->heatLampPin = heatLampPin;
     this->fanSpeedPin = fanSpeedPin;
@@ -61,6 +64,7 @@ void HeatBlock::moveAir() {
         this->switchHeatLamp(false);
         this->setFanSpeed(normalFanSpeed);
         this->movingAir = true;
+        this->coolingDown = false;
     }
 }
 
@@ -136,7 +140,7 @@ void HeatBlock::loop() {
 }
 
 void HeatBlock::handleStatusLEDs() {
-    digitalWrite(fcHeatingUpLedPin, heatLampOn ? HIGH : LOW);
-    digitalWrite(fcCoolingDownLedPin, coolingDown? HIGH : LOW);
-    digitalWrite(fcMovingAirLedPin, movingAir? HIGH : LOW);
+    digitalWrite(fcHeatingUpLedPin, heatLampOn ? LOW : HIGH);
+    digitalWrite(fcCoolingDownLedPin, coolingDown? LOW : HIGH);
+    digitalWrite(fcMovingAirLedPin, movingAir? LOW : HIGH);
 }
